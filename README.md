@@ -4,6 +4,8 @@ An AWS Lambda function to fetch events scheduled in classrooms at the University
 
 UIUC's Facility Scheduling and Logistics team regularly posts updates to a [Daily Event Summary Tableau dashboard](https://operations.web.illinois.edu/events/). The code in [lambda_function.py](lambda_function.py) gets event data for recent and upcoming events (see [Data limitations](#data-limitations)), processes the data, and inserts the events into a MongoDB database.
 
+This function is regularly run to update the events shown in the calendar view in [Rooms@Illinois](https://rooms-at-illinois.owenhay.es).
+
 ## Data limitations
 
 The [Daily Event Summary](https://operations.web.illinois.edu/events/) only contains events for today as well as events that occurred in the past 13 days or will occur within the next 14 days.
