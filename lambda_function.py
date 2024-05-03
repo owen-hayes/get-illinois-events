@@ -11,7 +11,6 @@ from pymongo.server_api import ServerApi
 def get_events_df():
     # URL of the CSV data
     csv_url = "https://tableau.admin.uillinois.edu/views/DailyEventSummary/DailyEvents/736dba17-6e8f-4ccf-af5d-fd884dfd32ce/dc632d93-ace1-4bac-b605-143007524566.csv"
-    # csv_url = "https://tableau.admin.uillinois.edu/views/DailyEventSummary/DailyEvents/5f5199d9-b39c-405f-84ef-1c6088e8abe3/6278da8a-42bb-41c1-98ee-aff940137635.csv"
 
     # Fetch CSV data from the URL
     response = requests.get(csv_url, timeout=10)
