@@ -9,6 +9,14 @@ from pymongo.server_api import ServerApi
 
 
 def get_events_df():
+    """Fetch events data from a Tableau dashboard and processes it into a pandas DataFrame.
+
+    Returns:
+        DataFrame: Pandas DataFrame representing all events found in the Tableau
+            dashboard with these columns: start_time, end_time, building, customer,
+            customer_contact, event_name, room.
+    """
+
     # URL of the CSV data
     csv_url = "https://tableau.admin.uillinois.edu/views/DailyEventSummary/DailyEvents/736dba17-6e8f-4ccf-af5d-fd884dfd32ce/dc632d93-ace1-4bac-b605-143007524566.csv"
 
@@ -61,6 +69,15 @@ def get_events_df():
 
 
 def convert_df_to_mongo_format(df):
+    """Converts DataFrame to MongoDB document format.
+
+    Args:
+        df (DataFrame): Pandas DataFrame containing events data.
+
+    Returns:
+        list: List of dictionaries representing events grouped by building.
+    """
+
     # Convert DataFrame to a list of dictionaries (documents)
     data_dict = df.to_dict(orient="records")
 
@@ -84,6 +101,13 @@ def convert_df_to_mongo_format(df):
 
 
 def update_database(events_df, buildings_with_events):
+    """Updates the MongoDB database with the events data.
+
+    Args:
+        events_df (DataFrame): Pandas DataFrame containing events data.
+        buildings_with_events (list): List of dictionaries representing events grouped by building.
+    """
+
     uri = os.environ.get("MONGODB_URI")
 
     # Create a new client and connect to the server
@@ -108,7 +132,7 @@ def update_database(events_df, buildings_with_events):
     print("  ⏰ Adding update_time...")
     illinois_events["UpdateTimes"].insert_one(
         {
-            "update_time": datetime.datetime.utcnow(),
+            "update_time": datetime.datetime.now(datetime.UTC),
             "events": len(events_df),
             "buildings": len(buildings_with_events),
         }
@@ -120,6 +144,16 @@ def update_database(events_df, buildings_with_events):
 
 
 def lambda_handler(request_event, context):
+    """Handler function for the Lambda event.
+
+    Args:
+        request_event: The event data passed to the Lambda function.
+        context: The runtime information provided by Lambda.
+
+    Returns:
+        str: Confirmation message.
+    """
+
     print("Step 1 : Process data from Tableau dashboard")
     events = get_events_df()
     print("✅ Finished Step 1")
@@ -140,4 +174,5 @@ def lambda_handler(request_event, context):
     return "Updated data"
 
 
-# lambda_handler(None, None)
+if __name__ == "__main__":
+    lambda_handler(None, None)
